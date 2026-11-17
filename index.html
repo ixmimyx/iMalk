@@ -160,6 +160,15 @@
 
   *{box-sizing:border-box;margin:0;padding:0}
 
+  /* ===== مؤشر الماوس: الوردة لوحدها، من غير أي سهم ماوس معاها =====
+     مرسومة SVG جوّه المتغير ده مرة واحدة: 5 ورقات بورجندي غامقة من الحواف ومضيئة
+     من النص، حولها هالة حمرها، وتحتها ظل صغير — ونقطة الالتقاط في مركزها.
+     و !important عشان تبقى فوق سهم الـ pointer اللي على الأزرار والصور كلها */
+  :root{
+    --flower-cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cdefs%3E%3CradialGradient id='p' cx='50%25' cy='32%25' r='75%25'%3E%3Cstop offset='0' stop-color='%23c02450'/%3E%3Cstop offset='.55' stop-color='%237c1028'/%3E%3Cstop offset='1' stop-color='%23420512'/%3E%3C/radialGradient%3E%3Cfilter id='f' x='-40%25' y='-40%25' width='180%25' height='180%25'%3E%3CfeDropShadow dx='0' dy='0' stdDeviation='1.4' flood-color='%23ff2f60' flood-opacity='.5'/%3E%3CfeDropShadow dx='.8' dy='1.1' stdDeviation='.7' flood-color='%23140306' flood-opacity='.5'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23f)' transform='translate(15 15)'%3E%3Cg fill='url(%23p)' stroke='%23320510' stroke-width='.5'%3E%3Cellipse rx='4' ry='6' cy='-4.6'/%3E%3Cellipse rx='4' ry='6' cy='-4.6' transform='rotate(72)'/%3E%3Cellipse rx='4' ry='6' cy='-4.6' transform='rotate(144)'/%3E%3Cellipse rx='4' ry='6' cy='-4.6' transform='rotate(216)'/%3E%3Cellipse rx='4' ry='6' cy='-4.6' transform='rotate(288)'/%3E%3C/g%3E%3Ccircle r='2.2' fill='%23c8325a'/%3E%3C/g%3E%3C/svg%3E") 15 15,pointer;
+  }
+  *,*::before,*::after{cursor:var(--flower-cursor)!important}
+
   body{
     min-height:100dvh;
     /* خط بناتي: Dancing Script — لو النت مقفول بيروح على خط الويندوز المكتوب باليد */
@@ -346,7 +355,7 @@
 
   .media{
     position:absolute;inset:0;
-    clip-path:url(#media-cut);
+    border-radius:var(--r-lg);
     overflow:hidden;
     display:grid;place-items:center;
     min-height:0;
@@ -367,13 +376,14 @@
   .media__photo{position:absolute;inset:0;z-index:1;background:var(--malk) 50% 50%/cover no-repeat}
 
   /* ===== 3-ب) الجاليري: أربع صور في عمودين وسطرين، والخامسة دايرة في نصهم ===== */
-  /* السطر التالت 32% = بالظبط ارتفاع مشغلة الصوت اللي تحت، وبقّت ممدودة عرض الصفحة كله */
+  /* بعد ما مشغل الصوت اتشال، السطور بقت تلات أرباع العمود فوق والربع التاني وراه،
+     فالجاليري بقى عمودين في وسطرين على قد مكان الصورة الكبير كله */
   .gallery{
     --d:22cqw;
     position:absolute;inset:0;
     display:grid;
     grid-template-columns:1fr 56%;
-    grid-template-rows:1fr 1fr 32%;
+    grid-template-rows:1fr 1fr;
     gap:var(--gap);
   }
   .tile{
@@ -400,102 +410,16 @@
   .gallery .tile:nth-child(2) .tile__img{--mx:calc(var(--gap) / -2);--my:calc(100% + var(--gap) / 2);transform-origin:bottom left}
   .gallery .tile:nth-child(3) .tile__img{--mx:calc(100% + var(--gap) / 2);--my:calc(var(--gap) / -2);transform-origin:top right}
   .gallery .tile:nth-child(4) .tile__img{--mx:calc(var(--gap) / -2);--my:calc(var(--gap) / -2);transform-origin:top left}
-  /* الدايرة نفسها: مركزها نقطة تلاقي السطرين والعمودين (44% حد العمودين، 34% حد السطرين)
+  /* الدايرة نفسها: مركزها نقطة تلاقي السطرين والعمودين (44% ناقص نص الفاصل للعمودين،
+     و 50% للسطور — مع سطور متساوية نقطة التلاقي بتبقى في النص بالظبط)
      — محسوب من مقاسات الجاليري. من غير أي إطار: الصورة الدائرية بتبان كاملة، والفاصل
      الدائري حوالينها عمله القص اللي في صور الأربع. نفس كلاس tile = نفس الضغط وبيانات الصورة */
   .gallery__center{
     position:absolute;
-    left:calc(44% - var(--gap)/2);top:calc(34% - var(--gap)/2);
+    left:calc(44% - var(--gap)/2);top:50%;
     margin-left:calc(var(--d) / -2);margin-top:calc(var(--d) / -2);
     width:var(--d);height:var(--d);border-radius:50%;
   }
-
-  /* ===== 4) MP3 PLAYER: نفس المستطيل تحت الصورة (مكانه وحجمه ما اتغيروش) ===== */
-  .lines{
-    position:absolute;right:0;bottom:0;
-    width:56%;height:32%;
-    border-radius:var(--r-lg);
-    padding:1.6cqw;
-    display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr auto auto;
-    gap:var(--gap);
-    box-shadow:
-      -1.2cqw -1.2cqw 2.4cqw var(--raise-light),
-      1.6cqw 1.6cqw 3.4cqw var(--drop);
-  }
-  /* في صفحة الأصدقاء وفي الجاليري مفيش خانة فاضية تحت على الشمال، فمكانها بيتقفل:
-     المشغل بيخد عرض الصفحة كامل — نفس الارتفاع ونفس الحافة التحت-يمين، بس ممدود على الشمال */
-  html[data-view="friends"] .lines,
-  html[data-view="gallery"] .lines{width:100%}
-
-  /* ===== 4-ب) إطار ساوند كلاود: أغاني ساوند كلاود مفيش منها لينك ملف مباشر،
-     فالتشغيل بيتم من المشغل الرسمي بتاعهم في إطار واحد بكسل مستخبي ورا المستطيل —
-     مفيش منه أي حاجة باينة على الصفحة، والأزرار بتاعتك (تشغيل/إيقاف/شريط التقدم/
-     الأوقات) هي اللي بتحكمه. أي سطر في SONGS لينكه يبدأ بـ soundcloud.com بيتم التعرف
-     عليه أوتوماتيك من غير أي كلاس زيادة ===== */
-  .sc-frame{
-    position:absolute;left:0;bottom:0;
-    width:1px;height:1px;border:0;opacity:0;pointer-events:none;
-  }
-
-  /* السطر الأول: غلاف صغير + سطر العنوان والفنان + زرار التشغيل */
-  .lines__head{display:flex;align-items:center;gap:1.4cqw}
-  .lines__art{
-    flex:none;width:5.6cqw;height:5.6cqw;border-radius:1.7cqw;
-    display:grid;place-items:center;color:var(--hi);
-  }
-  .lines__art svg{
-    width:2.9cqw;height:2.9cqw;
-    fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
-  }
-  .lines__text{flex:1;min-width:0;display:grid;gap:.9cqw;justify-items:start}
-  .lines__title{width:80%;height:1.1cqw;border-radius:.55cqw;background:var(--hi)}
-  .lines__sub{width:52%;height:.9cqw;border-radius:.45cqw;background:var(--hi-2);opacity:.6}
-  .lines__play{
-    flex:none;width:5.6cqw;height:5.6cqw;border:0;border-radius:50%;
-    background:var(--hi);color:var(--surface-lo);
-    box-shadow:.3cqw .3cqw .8cqw var(--drop);
-    display:grid;place-items:center;cursor:pointer;
-  }
-  .lines__play svg{width:2.6cqw;height:2.6cqw}
-  .lines__play .icon--pause{display:none}
-  .lines__play.is-playing .icon--pause{display:block}
-  .lines__play.is-playing .icon--play{display:none}
-  /* التجمع يمين السطر الأول: أغنية قبلية / تشغيل / أغنية بعدية */
-  .lines__ctrl{flex:none;display:flex;align-items:center;gap:.9cqw}
-  .lines__step{
-    flex:none;width:3.4cqw;height:3.4cqw;border:0;border-radius:50%;
-    background:none;color:var(--hi-2);
-    display:grid;place-items:center;cursor:pointer;
-  }
-  .lines__step svg{width:2.2cqw;height:2.2cqw}
-
-  /* الموجة: 12 عمود — ثابتة على النِسب دي، والـ EQ بيبدّلها بطول حقيقي من الصوت */
-  .lines__wave{display:flex;align-items:flex-end;gap:.45cqw;min-height:0}
-  .lines__wave i{flex:1;height:var(--h,48%);border-radius:.4cqw;background:var(--mid);opacity:.4}
-  .lines__wave i:nth-child(6n+1){--h:48%}
-  .lines__wave i:nth-child(6n+2){--h:86%}
-  .lines__wave i:nth-child(6n+3){--h:36%}
-  .lines__wave i:nth-child(6n+4){--h:72%}
-  .lines__wave i:nth-child(6n+5){--h:100%}
-  .lines__wave i:nth-child(6n+6){--h:60%}
-
-  /* شريط التقدم: ضغطة واحدة تقفّك في أي مكان */
-  .lines__bar{
-    position:relative;height:1.2cqw;border-radius:999px;cursor:pointer;
-  }
-  .lines__fill{
-    position:absolute;left:0;top:0;bottom:0;width:0%;
-    border-radius:999px;background:var(--hi);
-  }
-  .lines__knob{
-    position:absolute;top:50%;left:0%;transform:translate(-50%,-50%);
-    width:2.3cqw;height:2.3cqw;border-radius:50%;background:var(--hi);
-    box-shadow:.25cqw .25cqw .7cqw var(--drop);
-  }
-
-  /* الوقت: الحالي على الشمال والإجمالي على اليمين */
-  .lines__time{display:flex;justify-content:space-between;font-size:1.65cqw;line-height:1;font-weight:600;color:var(--hi-2)}
-  .lines__time .t-tot{color:var(--mid)}
 
   /* ===== 5) RIGHT COLUMN ===== */
   .side{grid-area:side;position:relative;display:flex;flex-direction:column;gap:2.2cqw;min-height:0}
@@ -517,10 +441,16 @@
     flex:1.5 1 0;min-height:0;
     border-radius:var(--r-md);
   }
+  /* وقت السحب بالماوس: البطاقات تلحق الماوس من غير ما الحركة تبطّلها، ومفيش تحديد كلام */
+  .stack.is-drag{user-select:none}
+  .stack.is-drag .stack__item{transition:none}
+  /* الكارت الماسكه بيطالع فوق الكل وهو بيتسحب — عشان ما يخلصش ورا الكارت الأوسطي */
+  .stack__item.is-held{z-index:9}
   .stack__item{
-    /* كل الكروت متوسطة راسياً بنفس الـ transform، والمكان بيتحدد بـ top */
+    /* كل الكروت متوسطة راسياً بنفس الـ transform، والمكان بيتحدد بـ top.
+       --dy بيترفع على الكارت الماسكه منه بس وقت السحب، فالحركة بتاعته هو لوحده */
     position:absolute;left:0;right:0;top:50%;height:44%;
-    transform:translateY(-50%);
+    transform:translateY(calc(-50% + var(--dy,0px)));
     border:0;cursor:pointer;
     border-radius:var(--r-sm);
     background:linear-gradient(150deg,var(--surface-mid),var(--surface-lo));
@@ -560,49 +490,46 @@
      التدرج اللي تحتها بيبان زي ما كان — والبروز الصغير فوق-شمال بيفضل فوق الصورة */
   .stack__img{position:absolute;inset:0;border-radius:inherit;background:50% 30%/cover no-repeat}
 
-  /* ===== 5-ب) SONGS: خانات الأغاني — أسطوانات زي خانة الوقت والتاريخ بالظبط، ومن غير أي مستطيل حولهم ===== */
-  /* الخانات بتعمل نفسها من قايمة SONGS اللي في السكربت — حط لينك الأغنية هناك وهي بتظهر هنا */
-  /* الكتلة دي بتاخد نفس ارتفاع مستطيل المشغل (32٪) فبتقف شابكاه من فوق ومن تحت */
-  .songs{
+  /* ===== 5-ب) NOTES: خانات النوت — أسطوانات زي خانة الوقت والتاريخ بالظبط، ومن غير أي مستطيل حولهم ===== */
+  /* الخانات بتعمل نفسها من قايمة NOTES اللي في السكربت — اكتب الجملتك هناك وهي بتظهر هنا.
+     مفيش موسيقى ولا مشغّل: الخانات دي للكتابة بس، وبتاخد نفس ارتفاع الكتلة القديمة (32٪) */
+  .notes{
     flex:none;height:32%;min-height:0;
     display:flex;flex-direction:column;gap:1cqw;
   }
-  /* كل أغنية = نفس زرار الوقت والتاريخ (بنفس كلاس pill) — الفرق إنه أطول على عرض العمود */
-  .track{
-    flex:1 1 0;min-height:0;font:inherit;cursor:pointer;
+  /* كل نوتة = نفس أسطوانة الوقت والتاريخ (بنفس كلاس pill) — الفرق إنها أرفع على عرض العمود.
+     الحشو الجانبي أقل هنا عشان آخر الخانة يفضل فاضي للكتابة: الأسطوانة نفسها نفس المقاس بالظبط */
+  .note{
+    flex:1 1 0;min-height:0;font:inherit;padding:0 .8cqw;
   }
-  /* العلامة على الشمال: نفس مكان أيقونة الوقت، بس أصغر شوية عشان الخانة أرفع */
-  .track svg{width:2.2cqw;height:2.2cqw;flex:none;fill:url(#ico-sheen);stroke:none}
-  /* الاسم: بياخد باقي الخانة ومتوسّط زي رقم الوقت بالظبط.
+  /* من غير أي علامة: الجملة تاخد عرض الخانة كله عشان تكبر أقصر ما تتمشى */
+  /* الخط بيصغّر نفسه بقدر الحاجة (--note-fs بيحسبها السكربت) لحد أطول جملة تدخل
+     الخانة كاملة، بس من غير ما يقل عن 70٪ من مقاسه الأصلي عشان تفضل مقروءة.
+     وتباعد الحروف ملغي هنا: في جملة تلم 31 حرف كل جزء من البكسل بيحسب */
+  .note .pill__text{font-size:calc(var(--note-fs, 1) * 1.8cqw);letter-spacing:0}
+  /* الجملة: بتاخد عرض الخانة ومتوسّطة زي رقم الوقت بالظبط.
      unicode-bidi:plaintext = اتجاه السطر بيتحدد من أول حرف فيه، فالعربي يترتب صح */
-  .track .pill__text{overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
-  /* الاسم أطول من الخانة؟ بيتمشي جواها على الشمال لحد ما يورّي آخره، وبيقف شوية
-     في كل ناحية ويرجع — والمقدار ده بيتحسب نسبة لعرض الخانة نفسها في السكربت،
+  .note .pill__text{overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+  /* الجملة أطول من الخانة؟ بتتمشي جواها على الشمال لحد ما توري آخرها، وبتقف شوية
+     في كل ناحية وترجع — والمقدار ده بيتحسب نسبة لعرض الخانة نفسها في السكربت،
      فالحركة تفضل نفس المسافة على أي مقاس شاشة */
   @keyframes marquee{
     0%, 14%{transform:translateX(0)}
     86%, 100%{transform:translateX(var(--shift, 0%))}
   }
-  .track.is-long .pill__text{
+  .note.is-long .pill__text{
     text-align:left;text-overflow:clip;
     animation:marquee 9s ease-in-out infinite alternate;
   }
-  /* الأغنية اللي شغالة: الخانة بتندرج جوا (غائرة) زي دايرة المود وهي مشغولة */
-  .track.is-active{
-    background:linear-gradient(155deg,var(--slot) 0%,var(--slot-lo) 100%);
-    box-shadow:
-      inset .5cqw .5cqw 1.1cqw var(--sink-dark),
-      inset -.4cqw -.4cqw .9cqw var(--rim);
-  }
 
-  /* ===== 5-أ) FRIENDS: أسطوانات زي خانات الأغاني بالظبط — خمس سطور فوق بعض في نص الصفحة ===== */
-  /* الكتلة دي بتاخد عرض الصورة الكبير كله وبتوقف قبل مشغل الصوت بفاقة، فالسطور محاذية
-     من الجنابين ومن فوق، والمشغل بيفضل في مكانه تحتهم من غير أي تداخل */
+  /* ===== 5-أ) FRIENDS: أسطوانات زي خانات النوت بالظبط — خمس سطور فوق بعض في نص الصفحة ===== */
+  /* بعد ما المشغل اتشال، الكتلة دي بتاخد مكان الصورة الكبير كله من فوق ولأسفل،
+     فالسطور محاذية من الجنابين ومن فوق ومن تحت وبتطول معاه */
   .friends{
-    position:absolute;inset:0 0 calc(32% + var(--gap)) 0;
+    position:absolute;inset:0;
     display:flex;flex-direction:column;gap:1cqw;min-height:0;
   }
-  /* كل صديق = نفس أسطوانة الأغنية (كلاس pill) — صورة مدورة على الشمال، جنبها الاسم
+  /* كل صديق = نفس أسطوانة النوتة (كلاس pill) — صورة مدورة على الشمال، جنبها الاسم
      على الشمال كمان، ويوزر xات والـ ID مع بعض مدفوعين على آخر الخانة على اليمين */
   .friend{
     flex:1 1 0;min-height:0;
@@ -630,15 +557,15 @@
 
   /* ===== 6) MOTION: موشن خفيف عند الوقوف على أي زرار أو سكشن — الصفحة تفضل حيّة ===== */
   /* كل الحرك نسبة وسكتة (٪ و scale) — كروم مش بتقدر تنقّل بين قيم cqw جوه transition */
-  .raise,.sink,.pill,.dot,.rail__btn,.lines__play,.lines__step,.lines__bar,.lines__knob,
-  .lines__wave i,.tile__img,.tile__glyph,.friend__avatar,.friend__name,.friend__user,.zoom__btn{
+  .raise,.sink,.pill,.dot,.rail__btn,
+  .tile__img,.tile__glyph,.friend__avatar,.friend__name,.friend__user,.zoom__btn{
     transition:transform var(--motion) var(--ease),opacity var(--motion) ease,filter var(--motion) ease,background var(--motion) ease,box-shadow var(--motion) ease;
   }
   /* الكروت: حركتها كلها متعرف في مكانها فوق (top/height/opacity) — سكتة الوقوف بتاعتها جوا نفس القاعدة */
 
   @media (hover:hover){
     /* السكشنات الكبيرة: بترتفع شعرة واحدة بس، من غير ما تغيير مكانها */
-    .media:hover,.lines:hover,.friend:hover,.tile:hover,
+    .media:hover,.friend:hover,.tile:hover,
     .pill:hover,.who:hover,.topbar__avatar:hover{transform:translateY(-.5%) scale(1.007)}
 
     /* الأزرار الدايرة: بتندرج جوا شوية، والضغطه بتدخلها أكتر */
@@ -649,22 +576,8 @@
     .gallery-jump:hover{transform:scale(1.03)}
     .gallery-jump:active{transform:scale(.97)}
 
-    /* زرار التشغيل وأزرار الأغاني: بيكبروا شوية */
-    .lines__play:hover{transform:scale(1.09)}
-    .lines__play:active{transform:scale(.94)}
-    .lines__step:hover{transform:scale(1.18)}
-    .lines__step:active{transform:scale(.9)}
-    .lines__art:hover{transform:scale(1.06)}
-
-    /* شريط التقدم: بيرتفع وعقربته بتكبر عشان تحس إنه ماسك حاجة */
-    .lines__bar:hover{transform:scaleY(1.35)}
-    .lines__bar:hover .lines__knob{transform:translate(-50%,-50%) scale(1.25)}
-
-    /* الأعمدة: بتفوق شوية لما تقف فوق المشغل */
-    .lines:hover .lines__wave i{opacity:.62}
-
-    /* الكروت المتراكبة: اللي واقف عليه بيميل للكبر شوية من مكانه */
-    .stack__item:hover{transform:translateY(-50%) scale(1.04)}
+    /* الكروت المتراكبة: اللي واقف عليه بيميل للكبر شوية من مكانه (--dy بيفضل مكانه اللي السحب واصله) */
+    .stack__item:hover{transform:translateY(calc(-50% + var(--dy,0px))) scale(1.04)}
 
     /* الجاليري: صورته بتعمل زووم خفيف وعلامته بتطالع */
     .tile:hover .tile__img{transform:scale(1.06)}
@@ -674,7 +587,7 @@
     .friend:hover .friend__avatar{transform:scale(1.07)}
     .friend:hover .friend__name,.friend:hover .friend__user{transform:translateX(2.5%)}
 
-    /* خانات الأغاني بتاخد حركة الوقوف نفسها من كلاس pill، فالسطور دي كانت بتزود زحمة — اتشالت */
+    /* خانات النوت بتاخد حركة الوقوف نفسها من كلاس pill، فالسطور دي كانت بتزود زحمة — اتشالت */
 
     /* أزرار الصورة الكبيرة: بتنده جوا زي باقي الأزرار الدايرة */
     .zoom__btn:hover{transform:scale(.92)}
@@ -731,24 +644,11 @@
 
   /* الأماكن اللي بتفتح الصورة الكبيرة: السهم يبان عليها */
   .tile,.media,.topbar__avatar{cursor:pointer}
-  /* المسطرة (الأعمدة): بتتشغل وتقف بالضغط عليها */
-  .lines__wave{cursor:pointer}
 </style>
 </head>
 <body>
 
-  <!-- 3-أ) قطع الصورة: أطراف القطع مدوّرة زي المستطيل الصغير (1.6cqw) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <clipPath id="media-cut" clipPathUnits="objectBoundingBox">
-        <path d="M0.044 0 L0.956 0 A0.044 0.032 0 0 1 1 0.032
-                 L1 0.628 A0.027 0.020 0 0 1 0.973 0.648
-                 L0.440 0.648 A0.044 0.032 0 0 0 0.396 0.680
-                 L0.396 0.980 A0.027 0.020 0 0 1 0.369 1
-                 L0.044 1 A0.044 0.032 0 0 1 0 0.968
-                 L0 0.032 A0.044 0.032 0 0 1 0.044 0 Z"/>
-      </clipPath>
-    </defs>
     <!-- لمعة العلامات: تدرّج واحد وكل أيقونة بياخد على مسحها الخاص -->
     <linearGradient id="ico-sheen" x1="0" y1="0" x2=".3" y2="1">
       <stop offset="0" stop-color="var(--ico-top)"/>
@@ -781,12 +681,6 @@
       <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
     </symbol>
     <!-- علامة الصورة الافتراضية: مرسومة مرة واحدة، وكل الخانات بيشاوروا عليها بـ use -->
-    <!-- علامة المزيكا: نوتة من bootstrap-icons بنفس طريقة القص — بتتاستعمل في قايمة الأغاني -->
-    <symbol id="ico-playlist" viewBox="1 1.905 14 13.095">
-      <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13s1.12-2 2.5-2 2.5.896 2.5 2m9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2"/>
-      <path fill-rule="evenodd" d="M14 11V2h1v9zM6 3v10H5V3z"/>
-      <path d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4z"/>
-    </symbol>
     <symbol id="glyph-photo" viewBox="0 0 24 24">
       <path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM8.5 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm10.7 8H4.8l4-6 3 4 2.6-3.2 4.8 5.2Z"/>
     </symbol>
@@ -868,7 +762,7 @@
       </nav>
     </aside>
 
-    <!-- 3) + 4) خانة الصورة، وفي ركنها التحتاني مشغل الصوت -->
+    <!-- 3) خانة الصورة: واخدة مكان العمود كله من فوق ولأسفل (مشغل الصوت اتشال) -->
     <section class="core">
       <div class="media layer raise">
         <svg class="media__glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#glyph-photo"/></svg>
@@ -876,7 +770,7 @@
         <i class="media__photo" role="img" aria-label="profile photo"></i>
       </div>
 
-      <!-- 3-ب) الجاليري: أربع صور فوق + الخامسة دايرة في نصهم، والسطر التحتاني كله مشغلة الصوت.
+      <!-- 3-ب) الجاليري: أربع صور في عمودين وسطرين على مكان الصورة كله + الخامسة دايرة في نصهم.
            صورة كل خانة: نفس السطر بتاع --p اللي الكارت بتاعه بياخذه، والخانة من غير صورة
            بيبان فيها علامة الصور الرمادية لوحدها -->
       <div class="gallery layer is-hidden">
@@ -902,7 +796,7 @@
         </div>
       </div>
       <!-- 5-أ) قايمة الأصدقاء: في صفحة الأصدقاء، في مكان الصورة الكبيرة — أسطوانات زي
-           خانات الأغاني بالظبط، كله فوق بعض في نص الصفحة وواقف قبل مشغل الصوت.
+           خانات النوت بالظبط، كله فوق بعض على مكان الصورة كله من فوق ولأسفل.
            كل صديق سطر واحد (7 سطور): friend__avatar = صورته المدورة، friend__name = اسمه،
            friend__user = يوزر xat بتاعه، friend__id = رقم الـ ID. عشان تزداد القائمة انسخ
            الـ <div class="friend pill raise"> كله وحطه تحت آخر صديق.
@@ -931,15 +825,6 @@
             <img alt="">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#glyph-person"/></svg>
           </span>
-          <span class="friend__name">Dolly</span>
-          <span class="friend__user">DodoLove14</span>
-          <span class="friend__id">1541187216</span>
-        </div>
-        <div class="friend pill raise">
-          <span class="friend__avatar sink">
-            <img alt="">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#glyph-person"/></svg>
-          </span>
           <span class="friend__name">Rehla</span>
           <span class="friend__user">RehLa3omry</span>
           <span class="friend__id">1536801945</span>
@@ -953,48 +838,19 @@
           <span class="friend__user">ixiaHagerixG</span>
           <span class="friend__id">1561221665</span>
         </div>
-      </div>
-
-      <div class="lines raise">
-        <div class="lines__head">
-          <div class="lines__art sink">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V6.2l9.5-1.9v11.4"/><circle cx="6.4" cy="17.6" r="2.6"/><circle cx="15.9" cy="15.7" r="2.6"/></svg>
-          </div>
-          <div class="lines__text">
-            <i class="lines__title"></i>
-            <i class="lines__sub"></i>
-          </div>
-          <div class="lines__ctrl">
-            <button class="lines__step" type="button" aria-label="previous song">
-              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M7.4 6.2h2.2v11.6H7.4Z"/><path d="M19 6.2v11.6L10.6 12Z"/></svg>
-            </button>
-            <button class="lines__play" type="button" aria-label="play">
-              <svg class="icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.4 5.2 19 12 8.4 18.8Z"/></svg>
-              <svg class="icon--pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M9.4 5.4v13.2M14.6 5.4v13.2"/></svg>
-            </button>
-            <button class="lines__step" type="button" aria-label="next song">
-              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M14.4 6.2h2.2v11.6h-2.2Z"/><path d="M5 6.2v11.6L13.4 12Z"/></svg>
-            </button>
-          </div>
+        <div class="friend pill raise">
+          <span class="friend__avatar sink">
+            <img alt="">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#glyph-person"/></svg>
+          </span>
+          <span class="friend__name">Nada</span>
+          <span class="friend__user">iiNadoshiii</span>
+          <span class="friend__id">1539082638</span>
         </div>
-
-        <div class="lines__wave">
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
-
-        <div class="lines__bar sink" role="slider" aria-label="seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-          <i class="lines__fill"></i>
-          <i class="lines__knob"></i>
-        </div>
-
-        <div class="lines__time"><span class="t-cur">0:00</span><span class="t-tot">0:00</span></div>
       </div>
     </section>
 
-    <!-- إطار ساوند كلاود المستخبي (بكسل واحد، مش باين خالص): اللي بيشتغل لما تختار أغنية من ساوند كلاود -->
-    <iframe class="sc-frame" id="sc-frame" title="SoundCloud player" src="about:blank" allow="autoplay; encrypted-media"></iframe>
-
-    <!-- 5) العمود الأيمن: خانة Photo، ووراها 5 كروت (واحد في النص و اتنين فوق و اتنين تحت)، وقايمة الأغاني تحت — التلاتة ثابتيين في كل الصفحات -->
+    <!-- 5) العمود الأيمن: خانة Photo، ووراها 5 كروت (واحد في النص و اتنين فوق و اتنين تحت)، وقايمة النوت تحت — التلاتة ثابتيين في كل الصفحات -->
     <aside class="side">
       <!-- خانة Photo: تحت دايرة المود، بتفتح صفحة المعرض اللي على الشمال -->
       <button class="gallery-jump raise" type="button">Photo</button>
@@ -1009,9 +865,9 @@
         <button class="stack__item pos-up1" type="button"><i class="stack__img" style="background-image:var(--p5)"></i><i class="stack__knob"></i></button>
       </div>
 
-      <!-- خانات الأغاني: من غير أي مستطيل حولها — كل أغنية أسطوانة زي الوقت والتاريخ، والخواص دي بتعمل نفسها
-           من قايمة SONGS في السكربت (نفس لينكات المشغل) -->
-      <div class="songs layer" id="songs"></div>
+      <!-- خانات النوت: من غير أي مستطيل حولها — كل جملة أسطوانة زي الوقت والتاريخ، والخانات
+           دي بتعمل نفسها من قايمة NOTES في السكربت (مفيش أي موسيقى في الصفحة) -->
+      <div class="notes layer" id="notes"></div>
 
     </aside>
 
@@ -1051,19 +907,76 @@
       });
     }
 
-    slides.forEach((s, n) => s.addEventListener('click', () => show(n)));
+    const deck = document.getElementById('deck');
+    /* state السحب. آخرSحبة بنتذكر وقتها بس عشان الضغطة اللي بتيجي وراها على طول
+       تتحسب من السحب مش ضغطة جديدة — وبكده مفيش علم بيفضل مرفوع ويبلعلك الضغطة الجاية */
+    let swiped = false, grabY = 0, dragId = null, dragCard = null, dragEndAt = 0;
+
+    slides.forEach((s, n) => s.addEventListener('click', () => {
+      if (Date.now() - dragEndAt < 300) return; /* دي بقايا سحبة، والمكان اتظبط في آخرها */
+      show(n);
+    }));
+
+    function stepBy(dir){
+      const active = slides.findIndex((s) => s.classList.contains('pos-mid'));
+      show((active + dir + slides.length) % slides.length);
+    }
 
     /* الكروت بعجلة الماوس: لفّة لتحت تنزّل اللي تحت النص، ولفّة لفوق تطلّع اللي فوقه.
-       لفّة واحدة كل مرة — عشان التاتش باد ما يلفّش الدكة كلها في ثانية */
+       لفّة واحدة كل مرة — عشان التاتش باد ما يلفّش الدكة كلها في ثانية.
+       واللفّة بتشتغل من أي مكان في العمود الأيمن كله، مش لازم الماوس يكون فوق الكروت بالظبط
+       (الصفحة دي أصلًا مفيش فيها سكرول تاني يستناه حد) */
     let wheelStamp = 0;
-    document.getElementById('deck').addEventListener('wheel', (e) => {
+    document.querySelector('.side').addEventListener('wheel', (e) => {
       e.preventDefault();
       const now = Date.now();
       if (now - wheelStamp < 180) return;
       wheelStamp = now;
-      const active = slides.findIndex((s) => s.classList.contains('pos-mid'));
-      show((active + (e.deltaY > 0 ? 1 : -1) + slides.length) % slides.length);
+      stepBy(e.deltaY > 0 ? 1 : -1);
     }, {passive:false});
+
+    /* أو بالسحب بالماوس (وبالقلم كمان): تضغط على كارت وتتمرّر، فالكارت الماسكه هو
+       اللي بيتحرّك ورا إيدك بس — باقي الكروت بتفضل في أماكنها لحد ما تسيب، ووقتها
+       اللي قرب من النص يسحب مكانه. والضغط في الفاصل بين الكروت بيمسك الأوسطي.
+       اللمس سيبتُه زي ما هو على حركة الصفحة عشان أما عكّر اللي شغال على الموبايل.
+       المسافة اللي بتعمل خطوة = نفس البُعد بين أي كارت واللي بعده (29٪ من الخانة) */
+    const cardStep = () => deck.getBoundingClientRect().height * .29;
+    let dragY = 0;
+
+    deck.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') return;
+      dragCard = e.target.closest('.stack__item') || deck.querySelector('.pos-mid');
+      grabY = e.clientY; dragY = 0; dragId = e.pointerId; swiped = false;
+      dragCard.classList.add('is-held'); /* يطلع فوق الكل وهو متسحب، مش ورا الأوسطي */
+      deck.setPointerCapture(dragId);
+    });
+    deck.addEventListener('pointermove', (e) => {
+      if (dragId === null || e.pointerId !== dragId) return;
+      dragY = e.clientY - grabY;
+      if (Math.abs(dragY) < 4) return;
+      swiped = true;
+      deck.classList.add('is-drag');
+      /* المرئي متكتّف في مسافة كارت واحد: يلحق إيدك بس ما يطيرش بعيد عن الباقي */
+      const s = cardStep();
+      dragCard.style.setProperty('--dy', Math.max(-s, Math.min(s, dragY)) + 'px');
+    });
+    function endDrag(e){
+      if (dragId === null || (e && e.pointerId !== dragId)) return;
+      const dy = dragY;
+      dragId = null; dragY = 0;
+      if (swiped) dragEndAt = Date.now();
+      dragCard.classList.remove('is-held');
+      deck.classList.remove('is-drag');
+      void deck.offsetWidth; /* تفصل حالة السحب عن الرجوع، فالـ transition يشتغل على آخر خطوة */
+      dragCard.style.removeProperty('--dy');
+      dragCard = null;
+      const steps = Math.round(-dy / cardStep());
+      if (steps) stepBy(steps);
+    }
+    deck.addEventListener('pointerup', endDrag);
+    deck.addEventListener('pointercancel', endDrag);
+    /* الماوس اتحرّر برّة الشباك: السحب يتقفل ويسيب مكانه بدل ما يفضل معلّق */
+    deck.addEventListener('lostpointercapture', endDrag);
 
     /* الدائرتين: الثيم يلف على 5 ألوان، والليلي يبدّل بين الداكن والأبيض */
     const root = document.documentElement;
@@ -1079,334 +992,47 @@
       root.dataset.mode = night.classList.toggle('is-on') ? 'night' : 'light';
     });
 
-    /* ===== مشغل الصوت + الـ EQ في المستطيل اللي تحت الصورة ===== */
-    /* حط لينك ملف الـ mp3 مكان الفارغ ده — سطر واحد
-       الأعمدة بتتحرك مع الموسيقى بس على لينك بيرجّع إذن CORS في رأس
-       Access-Control-Allow-Origin  (زي لينكات archive.org).
-       اللينك اللي ما بيرجّعش الإذن ده بيتشغل عادي بس الأعمدة تفضل ثابتة. */
-    /* قايمة الأغاني: خانة أسطوانية لكل أغنية — حط لينك الملف مكان الفارغ، وزرار قبل/بعد بيلفّوا عليها.
-       عادي تحط اسم الأغنية زي ما يبان في الخانة بعد اللينك على نفس السطر، قبله مسافة وعلامة |
-       مثال:  'https://…/song.mp3 | اسم الأغنية - اسم المغني'  — ومن غير الـ | الاسم بيتقرا من اسم الملف */
-    const SONGS = [
-      'https://serv100.albumaty.com/songs_2020/Albumaty.Com_hmzh_nmrh_alwkat_alakhyrt.mp3 | الوقعة الأخيرة - حمزه نمره',   /* الأغنية ١ */
-      'https://serv100.albumaty.com/songs_2020/Albumaty.Com_hmzh_nmrh_fady_shwyt.mp3 | فاضي شوية - حمزه نمره',   /* الأغنية ٢ */
-      'https://soundcloud.com/mostafa-fheel/khadiga-hegazy-ft-el-azraa-yehel-el-leil | خديجه حجازي و الأزرق - يهل الليل',   /* الأغنية ٣ */
-      'https://serv100.albumaty.com/2024/Albumaty.Com_bhaa_sltan_ana_mn_ghyrk_-_mn_fylm_alhwi_sltan.mp3 | انا من غيرك - بهاء سلطان',   /* الأغنية ٤ */
-      'https://serv100.albumaty.com/song2022/Albumaty.Com_ahmd_sad_kadr_akml.mp3 | قادر اكمل - احمد سعد',   /* الأغنية ٥ */
+    /* ===== خانات النوت على اليمين ===== */
+    /* خمس خانات، في كل واحدة جملة. اكتب الجملتك مكان النص الفاضي على نفس السطر —
+       أي سطر فاضي بيبان في خانتُه "Note 1" ... لحد عدد السطور.
+       مفيش أي موسيقى في الصفحة دي: الخانات للكتابة بس، والجملة اللي أطول من
+       عرض الخانة بتتمشى جواها على الشمال لحد ما توري آخرها.
+       عشان تزيد الخانات زوّد سطر في NOTES فوق، وزوّد الـ height في .notes بنفس القدر */
+    const NOTES = [
+      'Me first, second and last',   /* النوتة ١ */
+      "Don't be perfect, be real",   /* النوتة ٢ */
+      'Not everyone you lose is a lose',   /* النوتة ٣ */
+      'Maybe another life',   /* النوتة ٤ */
+      'Can i have you forever',   /* النوتة ٥ */
     ];
 
-    /* اللينك لوحده (من غير الاسم اللي ورا الـ |) عشان منه يشتغل الصوت */
-    const urlOf = (src) => src.split(' | ')[0].trim();
-    /* الاسم المكتوب ورا الـ |، ولو محطوطش حاجة بيرجع فاضي */
-    const titleOf = (src) => { const p = src.split(' | '); return p.length > 1 ? p.slice(1).join(' | ').trim() : ''; };
+    const notesBox = document.getElementById('notes');
 
-    const btn = document.querySelector('.lines__play');
-    const bar = document.querySelector('.lines__bar');
-    const fill = document.querySelector('.lines__fill');
-    const knob = document.querySelector('.lines__knob');
-    const tCur = document.querySelector('.lines__time .t-cur');
-    const tTot = document.querySelector('.lines__time .t-tot');
-    const eqBars = [...document.querySelector('.lines__wave').children];
-
-    let ratio = 0;
-    let index = 0;
-    let song = null;
-    /* المصدر اللي شغال دلوقتي: 'local' = ملف mp3 مباشر، و'sc' = أغنية ساوند كلاود */
-    let mode = 'local';
-    let ctx = null;
-    let graphFor = null;
-    let analyser = null;
-    let bins = null;
-    let binHz = 0;
-    let rafId = 0;
-
-    const fmt = (s) => { s = Math.max(0, Math.round(s) || 0); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
-
-    function paint(){
-      const pct = (ratio * 100).toFixed(2) + '%';
-      fill.style.width = pct;
-      knob.style.left = pct;
-      bar.setAttribute('aria-valuenow', Math.round(ratio * 100));
-    }
-
-    function seekTo(r){
-      ratio = Math.min(1, Math.max(0, r));
-      if (mode === 'sc') {
-        scSeek();
-        tCur.textContent = fmt(ratio * scDur / 1000);
-      } else {
-        if (song && song.duration) song.currentTime = ratio * song.duration;
-        tCur.textContent = fmt(ratio * (song && song.duration ? song.duration : 0));
-      }
-      paint();
-    }
-
-    /* الـ EQ: بلف الأعمدة على الترددات لوغاريتمي — البس على الشمال والحواسيب على اليمين */
-    function drawEq(){
-      rafId = requestAnimationFrame(drawEq);
-      analyser.getByteFrequencyData(bins);
-      const top = Math.min(16000, ctx.sampleRate / 2);
-      const loHz = Math.log2(60), hiHz = Math.log2(top);
-      eqBars.forEach((el, i) => {
-        const hz = 2 ** (loHz + ((i + .5) / eqBars.length) * (hiHz - loHz));
-        const from = Math.max(1, Math.floor(hz / binHz));
-        const to = Math.min(bins.length - 1, Math.max(from + 1, Math.ceil(hz / binHz)));
-        let peak = 0;
-        for (let b = from; b <= to; b++) peak = Math.max(peak, bins[b]);
-        el.style.setProperty('--h', (6 + 94 * (peak / 255) ** .85).toFixed(1) + '%');
-      });
-    }
-
-    function stopEq(){
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-
-    /* يركّب الصوت على محلل الترددات — لجوا ضغطة عشان المتصفح مبيرضاش عن غير كده */
-    function armEq(){
-      if (!song || !song.crossOrigin || graphFor === song) return;
-      try {
-        if (!ctx) {
-          ctx = new AudioContext();
-          analyser = ctx.createAnalyser();
-          analyser.fftSize = 2048;
-          analyser.smoothingTimeConstant = .82;
-          bins = new Uint8Array(analyser.frequencyBinCount);
-          binHz = ctx.sampleRate / analyser.fftSize;
-          analyser.connect(ctx.destination);
-        }
-        ctx.createMediaElementSource(song).connect(analyser);
-        graphFor = song;
-      } catch (e) {
-        ctx = null;
-        graphFor = null;
-      }
-    }
-
-    function setPlaying(on){
-      btn.classList.toggle('is-playing', on);
-      btn.setAttribute('aria-label', on ? 'pause' : 'play');
-    }
-
-    /* بيرجّع الأعمدة لشكلها الثابت */
-    function clearEqBars(){
-      eqBars.forEach(el => el.style.removeProperty('--h'));
-    }
-
-    function corsElement(src){
-      const el = new Audio();
-      el.crossOrigin = 'anonymous';
-      el.preload = 'metadata';
-      el.src = src;
-      return el;
-    }
-
-    function wire(el){
-      song = el;
-      /* أي خبر من أغنية اتسابت لازم ميمسش حالة اللي شغالة دلوقتي */
-      el.addEventListener('loadedmetadata', () => {
-        if (el !== song) return;
-        tTot.textContent = fmt(el.duration);
-      });
-      el.addEventListener('timeupdate', () => {
-        if (el !== song || !el.duration) return;
-        ratio = el.currentTime / el.duration;
-        tCur.textContent = fmt(el.currentTime);
-        paint();
-      });
-      el.addEventListener('ended', () => {
-        if (el !== song) return;
-        stop();
-        ratio = 0;
-        tCur.textContent = '0:00';
-        paint();
-      });
-      /* اللينك ما بيرجّعش إذن → نرجع تشغيل عادي من غير الـ EQ بدل ما يقف */
-      el.addEventListener('error', () => {
-        if (el !== song || !el.crossOrigin) return;
-        const plain = new Audio(urlOf(SONGS[index]));
-        plain.preload = 'metadata';
-        wire(plain);
-      });
-    }
-
-    function start(){
-      if (mode === 'sc') { scPlay(); return; }
-      const el = song;
-      if (!el) return;
-      setPlaying(true);
-      armEq();
-      if (ctx) { ctx.resume(); drawEq(); }
-      /* لو الأغنية اتبدلت قبل ما تبدأ، الرفض ده بيخص العنصر القديم — ميفيدش يوقف الجديدة */
-      el.play().catch(() => { if (song === el) stop(); });
-    }
-
-    function stop(){
-      if (mode === 'sc') { scPause(); setPlaying(false); return; }
-      if (song) song.pause();
-      stopEq();
-      clearEqBars();
-      setPlaying(false);
-    }
-
-    /* أغنية جديدة: بيطفّي المؤشر والأعمدة، ولو كانت شغالة بيكمّل على اللي بعدها */
-    function load(i, keepPlaying){
-      index = (i + SONGS.length) % SONGS.length;
-      stop();
-      const old = song;
-      song = null;
-      if (old) old.removeAttribute('src');
-      ratio = 0;
-      tCur.textContent = '0:00';
-      tTot.textContent = '0:00';
-      paint();
-      const src = SONGS[index];
-      syncPlaylist();
-      if (isSC(src)) {
-        /* لينك ساوند كلاود: مش ملف، فبيتحط في المشغل الرسمي بتاعهم المستخبي */
-        mode = 'sc';
-        scWant = !!keepPlaying;
-        scMount(urlOf(src));
-        if (keepPlaying) scPlay();
-      } else {
-        mode = 'local';
-        scStop();
-        if (src) {
-          wire(corsElement(urlOf(src)));
-          if (keepPlaying) start();
-        }
-      }
-    }
-
-    /* ===== أغاني ساوند كلاود ===== */
-    /* لينك ساوند كلاود مفيش منه ملف mp3 مباشر، فالأغنية بتتحمل في المشغل الرسمي
-       بتاعهم جوه الإطار المستخبي (.sc-frame) وبتحكم من هنا عن طريق الـ Widget API:
-       نفس زرار التشغيل، نفس شريط التقدم، ونفس الوقتين — من غير أي واجهة باينة.
-       الأعمدة بتاعت الـ EQ بتفضل ثابتة معاه لأن الصوت جوه إطار تاني محجول بالإذن.
-       لو عايز تضيف أغنية من هناك: سطر جديد في SONGS باللينك بتاع الصفحة + الاسم ورا الـ | */
-    const scFrame = document.getElementById('sc-frame');
-    const isSC = (src) => /^https?:\/\/(www\.)?soundcloud\.com\//i.test(urlOf(src));
-    let sc = null;
-    let scWant = false;
-    let scReady = false;
-    let scDur = 0;
-    /* الأغنية اللي جوه الإطار دلوقتي: لازم نعرفها عشان ما نرشّطش الإطار من وراها */
-    let scUrl = null;
-    /* نفس الإعدادات اللي بتتحط في عنوان الإطار، بتتبعها كل ما أغنية تتغير */
-    const scOpts = () => ({ auto_play: false, hide_related: true, show_comments: false, show_user: false, show_reposts: false, visual: false });
-
-    /* سكربت الـ API بيحمّل مرة واحدة بس، وأول ما يوصل المشغل بيتجهز */
-    function scApiReady(cb){
-      if (window.SC && window.SC.Widget) { cb(); return; }
-      const s = document.createElement('script');
-      s.src = 'https://w.soundcloud.com/player/api.js';
-      s.onload = cb;
-      s.onerror = () => s.remove();
-      document.head.append(s);
-    }
-
-    function scBind(){
-      sc.bind(window.SC.Widget.Events.READY, () => {
-        scReady = true;
-        sc.getDuration((ms) => { scDur = ms; if (mode === 'sc') tTot.textContent = fmt(ms / 1000); });
-        if (scWant) sc.play();
-      });
-      /* أي خبر من الإطار ممكن يوصل متأخر — بعد ما نكون حولنا لأغنية mp3 —
-         فكل خبر بيتمرر من هنا بيتقبل بس طول ما المصدر الشغال هو ساوند كلاود */
-      sc.bind(window.SC.Widget.Events.PLAY, () => { if (mode === 'sc') setPlaying(true); });
-      sc.bind(window.SC.Widget.Events.PAUSE, () => { if (mode === 'sc') setPlaying(false); });
-      sc.bind(window.SC.Widget.Events.FINISH, () => {
-        if (mode !== 'sc') return;
-        setPlaying(false);
-        ratio = 0;
-        tCur.textContent = '0:00';
-        paint();
-      });
-      /* الوقت الحالي والمدة بيوصلوا بالميلي ثانية.
-         الحقول اسمها في النسخة الجديدة currentPosition و relativePosition،
-         وفي القديمة current_time و total_time — الاتنين متقبلين هنا */
-      sc.bind(window.SC.Widget.Events.PLAY_PROGRESS, (d) => {
-        if (mode !== 'sc') return;
-        const cur = d.currentPosition ?? d.current_time ?? 0;
-        scDur = d.total_time || scDur || (d.relativePosition ? cur / d.relativePosition : 0);
-        ratio = scDur ? Math.min(1, Math.max(0, cur / scDur)) : 0;
-        tCur.textContent = fmt(cur / 1000);
-        tTot.textContent = fmt(scDur / 1000);
-        paint();
-      });
-    }
-
-    function scMount(url){
-      /* نفس الأغنية اللي جوّه الإطار أصلًا: سيب الإطار زي ما هو.
-         إعادة نفس العنوان على الإطار مبتعملش تحميل جديد، فالرسايل بتاعت "جاهز"
-         مش بتتقال تاني ولو عدّلنا الرايات كنا بنستنى استعداد مش هييجي أبدًا */
-      if (sc && scUrl === url) {
-        if (scReady && scDur) tTot.textContent = fmt(scDur / 1000);
-        return;
-      }
-      scReady = false;
-      scDur = 0;
-      scUrl = url;
-      /* أول مرة: العنوان بيتحط قبل ما النسخة تتبني — سكربت ساوند كلاود بيقرا
-         عنوان الإطار مرة واحدة وهو بيتبني، ولو قراه فاضي بيرفض كل رسالة تيجي بعده.
-         بعد كده أي أغنية تانية بتمرر عن طريق load بتاعهم: هو اللي بيغيّر
-         العنوان ويستنى "جاهز" من جديد ويعايد تسجيل الأحداث على الصفحة الجديدة */
-      if (sc) { sc.load(url, scOpts()); return; }
-      scFrame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&' +
-        Object.entries(scOpts()).map(([k, v]) => k + '=' + v).join('&');
-      scApiReady(() => {
-        if (sc) return;
-        sc = window.SC.Widget(scFrame);
-        scBind();
-      });
-    }
-
-    function scPlay(){ scWant = true; if (sc && scReady) sc.play(); }
-    function scPause(){ scWant = false; if (sc && scReady) sc.pause(); }
-    function scSeek(){ if (sc && scReady && scDur) sc.seekTo(Math.round(ratio * scDur)); }
-    /* الأغنية بتقابل mp3: الوقف بس — الراية الجاهزة بتفضل صحّ لأن الإطار نفسه لسه شغال */
-    function scStop(){ scWant = false; if (sc) sc.pause(); }
-
-    /* ===== خانات الأغاني على اليمين ===== */
-    /* كل أغنية بتعمل أسطوانة لوحدها زي خانة الوقت والتاريخ بالظبط — من غير أي مستطيل حولهم.
-       عشان تزيد الخانات زوّد سطر في SONGS فوق. الاسم اللي بيبان في الخانة هو المكتوب
-       ورا الـ | على نفس السطر، ولو محطوطش بيرجع بيتقرا من اسم الملف،
-       ولو الخانة فاضية بيبقى "Song 1" ... لحد عدد السطور.
-       الضغط على أي خانة بتشغل الأغنية دي في المشغل الكبير، واللي شغالة بتغور جوا. */
-    const songsBox = document.getElementById('songs');
-
-    function trackName(src, n){
-      if (!src) return 'Song ' + (n + 1);
-      const named = titleOf(src);
-      if (named) return named;
-      const file = urlOf(src).split(/[?#]/)[0].split('/').pop();
-      let out = file;
-      try { out = decodeURIComponent(file); } catch (err) {}
-      return out.replace(/\.[a-z0-9]+$/i, '') || out;
-    }
-
-    SONGS.forEach((src, n) => {
-      const cell = document.createElement('button');
-      cell.type = 'button';
-      cell.className = 'track pill raise';
-      const glyph = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      glyph.setAttribute('aria-hidden', 'true');
-      glyph.innerHTML = '<use href="#ico-playlist" width="100%" height="100%"/>';
-      const name = document.createElement('span');
-      name.className = 'pill__text';
-      name.textContent = trackName(src, n);
-      cell.append(glyph, name);
-      cell.addEventListener('click', () => load(n, true));
-      songsBox.append(cell);
+    NOTES.forEach((text, n) => {
+      const cell = document.createElement('div');
+      cell.className = 'note pill raise';
+      const body = document.createElement('span');
+      body.className = 'pill__text';
+      body.textContent = text || 'Note ' + (n + 1);
+      cell.append(body);
+      notesBox.append(cell);
     });
 
-    /* الخانة اللي اسمها أطول من عرضها بتخد كلاس is-long فالحركة بتاعت الاسم تشتغل عليها،
-       والمقدار --shift = الفرق بين عرض الكتابة وعرض الخانة كنسبة من الخانة نفسها.
-       القياس بيرجع يتعمل تاني بعد ما الخط يحمّل وبعد أي تغيير في مقاس الصفحة */
-    function fitTracks(){
-      [...songsBox.children].forEach((cell) => {
-        const label = cell.querySelector('.pill__text');
-        if (!label) return;
+    /* قبل أي حركة: الخط بيتصغّر بالقدر اللي يخلّي أطول جملة تدخل الخانة كاملة
+       (--note-fs على الكتلة كلها فكل الخانات تفضل بنفس المقاس)، وبعدين اللي يزيد
+       رغم ذلك بيتمشى جوا خانته. القياس بيرجع يتعمل تاني بعد ما الخط يحمّل
+       وبعد أي تغيير في مقاس الصفحة */
+    function fitNotes(){
+      const labels = [...notesBox.querySelectorAll('.pill__text')];
+      notesBox.style.setProperty('--note-fs', '1');
+      const room = labels.map((label) => {
+        const have = label.clientWidth;
+        return have > 2 && label.scrollWidth > have ? have / label.scrollWidth : 1;
+      });
+      /* *0.97 = هامش أمان صغير يسيب نفس من الخانة في آخر حرف، لأن القياس بيتم على جزئين من البكسل */
+      notesBox.style.setProperty('--note-fs', (Math.max(0.7, Math.min(...room)) * 0.97).toFixed(3));
+      labels.forEach((label) => {
+        const cell = label.parentElement;
         cell.classList.add('is-long');
         const have = label.clientWidth;
         const over = label.scrollWidth - have;
@@ -1418,49 +1044,19 @@
         }
       });
     }
-    fitTracks();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTracks);
-    new ResizeObserver(fitTracks).observe(document.querySelector('.frame'));
-
-    function syncPlaylist(){
-      [...songsBox.children].forEach((cell, n) => cell.classList.toggle('is-active', n === index));
-    }
-
-    load(0, false);
-
-    btn.addEventListener('click', () => {
-      btn.classList.contains('is-playing') ? stop() : start();
-    });
-
-    /* زرارين تبديل الأغنية: الأولاني للقبلية والتاني للبعدية، وبيلفّوا على القائمة */
-    [...document.querySelectorAll('.lines__step')].forEach((el, n) => {
-      el.addEventListener('click', () => load(index + (n === 0 ? -1 : 1), btn.classList.contains('is-playing')));
-    });
-
-    /* المسطرة (الأعمدة): ضغطة تشغّل الأغنية وضغطة توقفها */
-    document.querySelector('.lines__wave').addEventListener('click', () => {
-      btn.classList.contains('is-playing') ? stop() : start();
-    });
-
-    bar.addEventListener('click', (e) => {
-      const b = bar.getBoundingClientRect();
-      seekTo((e.clientX - b.left) / b.width);
-    });
-
-    bar.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { seekTo(ratio + .05); e.preventDefault(); }
-      if (e.key === 'ArrowLeft') { seekTo(ratio - .05); e.preventDefault(); }
-    });
+    fitNotes();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNotes);
+    new ResizeObserver(fitNotes).observe(document.querySelector('.frame'));
 
     /* التنقل فوق: نفس الصفحة — اللي بيتغير هو الخانات اللي بتبان وبس */
     const navBtns = [...document.querySelector('.rail__grp').children];
     const VIEWS = ['home', 'gallery', 'friends'];
-    /* الخانات اللي بتبان في كل صفحة — الكروت وقايمة الأغاني ثابتة في الصفحات الثلاثة،
-       ومشغل الصوت مش موجود هنا لأنه دايماً ظاهر */
+    /* الخانات اللي بتبان في كل صفحة — الكروت وقايمة النوت ثابتة في الصفحات الثلاثة،
+       والصورة الكبيرة في مكانها في الرئيسية بس */
     const SHOW = {
-      home: ['.media', '.stack', '.songs'],
-      gallery: ['.gallery', '.stack', '.songs'],
-      friends: ['.friends', '.stack', '.songs'],
+      home: ['.media', '.stack', '.notes'],
+      gallery: ['.gallery', '.stack', '.notes'],
+      friends: ['.friends', '.stack', '.notes'],
     };
     const layers = [...document.querySelectorAll('.layer')];
 
@@ -1596,8 +1192,6 @@
 
     tickClock();
     setInterval(tickClock, 1000);
-
-    paint();
   </script>
 
 </body>
